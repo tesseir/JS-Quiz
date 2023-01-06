@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./Assets/style.css">
+  <title>Java Script Quiz</title>
+</head>
+
+<!--* lb = leaderboard -->
+<!--* qn = question-->
+<!--* ans = answer-->
+<!--* sv = save-->
+
+<!--! f = flex (for css)  -->
+<!--! h = hide (for css)  -->
+
+<!--? p = play (for js) -->
+<!--? r = restart (for js) -->
+<!--? ini = initials (for js) -->
+
+<body>
+  <main class="container f-column">
+
+    <!-- leaderboard section-->
+    <section>
+      <ul class="lb-box f-column h" id="lb-parent"></ul>
+    </section>
+
+    <!-- game stats-->
+    <section class="stats-box f-row h">
+      <p class="stats"  id="timer"></p>
+      <p class="stats"  id="score"></p>
+    </section>
+
+    <!-- questions container-->
+    <section class="qn-box h"></section>
+
+    <!-- answers container-->
+    <section class="ans-box f-row h" ></section>
+
+    <!-- buttons cotainer-->
+    <section class="btn-box f-row" >
+      <button class="btn" id="p-btn">Play</button>
+      <button class="btn h" id="sv-btn">Save</button>
+      <button class="btn h" id="r-btn">Restart</button>
+    </section>
+
+    <!-- save container-->
+    <section class="sv-box h">
+      <input class="user-ini" type="text">
+    </section>
+
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
