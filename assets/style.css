@@ -3,6 +3,7 @@
 * qn = question
 * ans = answer
 * sv = save
+* cnt = container
 
 ! f = flex (for css)  
 ! h = hide (for css)  
@@ -23,7 +24,6 @@ colors light > dark
   padding: 0;
 	box-sizing: border-box;
 	font-family: sans-serif;
-
 }
 
 body {
@@ -38,3 +38,50 @@ body {
 	min-height: 100vh;
 }
 
+.cnt {
+	background-color: #36393e;
+	padding: 30px;
+	width: 50vh;
+	height: 80vh;
+}
+
+.f-column{
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+}
+
+.f-row{
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-evenly;
+}
+
+.btn {
+	border: none;
+	color: #fff;
+	cursor: pointer;
+	font-size: 16px;
+	padding: 8px 12px;
+	background-color: #282b30;
+}
+
+.stats-box{
+	margin-top: 15px;
+	justify-content: space-evenly;
+	align-items: center;
+}
+
+.stats{
+	text-align: center;
+	font-size: 2rem;
+}
+
+.sv-box{
+	text-align: center;
+}
+
+/* .h{
+	display: none;
+} */
