@@ -1,5 +1,13 @@
 # JS-Quiz
 
+## Images of use:
+
+## Usage
+
+Download the files to your local drive, and run "Index.HTML" on Chrome. Please download all files to your device, and keep them together in the folder "password-generator" as they are crucial to the site working properly. 
+
+Click the generate button to generate a password. Change the length of the password by inputing a number between 8 and 128. To change what passwords contain, check or uncheck the text boxes.
+
 ## User Story
 
 - AS A coding boot camp student

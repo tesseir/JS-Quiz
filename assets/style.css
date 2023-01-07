@@ -78,10 +78,14 @@ body {
 	font-size: 2rem;
 }
 
-.sv-box{
+.qn-box, .sv-box {
 	text-align: center;
 }
 
-/* .h{
+.below10 {
+	color: red;
+}
+
+.h{
 	display: none;
-} */
+}
