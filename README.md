@@ -1,12 +1,21 @@
 # JS-Quiz
 
+Github Repo: https://github.com/tesseir/JS-Quiz
+
+Deployed page: https://tesseir.github.io/JS-Quiz/
+
 ## Images of use:
+
+![Start](https://raw.githubusercontent.com/tesseir/JS-Quiz/main/assets/images/Capture1.PNG)
+
+![Actual quiz portion](https://raw.githubusercontent.com/tesseir/JS-Quiz/main/assets/images/Capture2.PNG)
+
 
 ## Usage
 
-Download the files to your local drive, and run "Index.HTML" on Chrome. Please download all files to your device, and keep them together in the folder "password-generator" as they are crucial to the site working properly. 
+Download the files to your local drive, and run "Index.HTML" on Chrome. Please download all files to your device, and keep them together in the folder "js-quiz" as they are crucial to the site working properly. 
 
-Click the generate button to generate a password. Change the length of the password by inputing a number between 8 and 128. To change what passwords contain, check or uncheck the text boxes.
+Press the play button to start. You will then be given a question with four answers. Once you go through all of the questions, you will be given your score and prompted to save your intials and score for the score board. 
 
 ## User Story
 
