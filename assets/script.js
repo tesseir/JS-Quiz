@@ -35,7 +35,7 @@ const randomizer = (range) => {
 let score = 0;
 let timeLeft = 120;
 let currentQn;
-let shuffled_qnPool, currentQn_index;
+let shuffled_qnPool, currentQn_index = 0;
 
 // question pool
 let qnPool =[
@@ -75,19 +75,50 @@ ans:[
 //play button listener
 playBtn.addEventListener('click', startQuiz)
 
+//
 function startQuiz () {
   console.log("start")
+  shuffled_qnPool=[]
+  for (let i = 0; i < 10; i++) {
+    shuffled_qnPool.push(randomizer(qnPool))
+  } 
   // userInterface();
   // timerStart();
+  shuffled_qnPool = [...new Set(shuffled_qnPool)];
   loadQn();
 }
 
 function loadQn () {
-  shuffled_qnPool= randomizer(qnPool)
-  console.log(shuffled_qnPool)
+  if (currentQn_index < shuffled_qnPool.length){
+  console.log(shuffled_qnPool[currentQn_index])
   console.log("Question Loaded")
-
+  injectQn(shuffled_qnPool[currentQn_index].qn)
+  injectAns(shuffled_qnPool[currentQn_index].ans)
+  } 
 }
+
+function injectQn (text) {
+  qnEl.innerHTML = text
+}
+
+function injectAns (answers) {
+  ansEl.innerHTML = answers.map(
+    a => `<button onclick="onbuttonclick(${a.correct})">${a.text} </button>`).join('')
+}
+
+window.onbuttonclick = (e) => {
+  console.log(e)
+  if (e === true && (currentQn_index < shuffled_qnPool.length-1)) {
+    score++
+    scoreEl.innerHTML = score
+  } if (currentQn_index < shuffled_qnPool.length) {
+    currentQn_index++
+    loadQn ()
+  } else {
+    alert("youredone")
+  }
+}
+
 
 function userInterface () {
   statsEl.classList.remove('h');
