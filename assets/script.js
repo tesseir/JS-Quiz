@@ -79,7 +79,7 @@ playBtn.addEventListener('click', startQuiz)
 function startQuiz () {
   console.log("start")
   shuffled_qnPool=[]
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < qnPool.length; i++) {
     shuffled_qnPool.push(randomizer(qnPool))
   } 
   // userInterface();
@@ -104,6 +104,7 @@ function injectQn (text) {
 function injectAns (answers) {
   ansEl.innerHTML = answers.map(
     a => `<button onclick="onbuttonclick(${a.correct})">${a.text} </button>`).join('')
+    debugger
 }
 
 window.onbuttonclick = (e) => {
