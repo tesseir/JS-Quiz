@@ -12,6 +12,8 @@
 <!--* qn = question-->
 <!--* ans = answer-->
 <!--* sv = save-->
+<!--* cnt = container-->
+
 
 <!--! f = flex (for css)  -->
 <!--! h = hide (for css)  -->
@@ -21,7 +23,7 @@
 <!--? ini = initials (for js) -->
 
 <body>
-  <main class="container f-column">
+  <main class="cnt f-column">
 
     <!-- leaderboard section-->
     <section>
@@ -30,8 +32,8 @@
 
     <!-- game stats-->
     <section class="stats-box f-row h">
-      <p class="stats"  id="timer"></p>
-      <p class="stats"  id="score"></p>
+      <p class="stats"  id="timer">100</p>
+      <p class="stats"  id="score">0</p>
     </section>
 
     <!-- questions container-->
@@ -40,16 +42,16 @@
     <!-- answers container-->
     <section class="ans-box f-row h" ></section>
 
+      <!-- save container-->
+      <section class="sv-box h">
+        <input class="user-ini" type="text">
+      </section>
+
     <!-- buttons cotainer-->
     <section class="btn-box f-row" >
-      <button class="btn" id="p-btn">Play</button>
       <button class="btn h" id="sv-btn">Save</button>
+      <button class="btn" id="p-btn">Play</button>
       <button class="btn h" id="r-btn">Restart</button>
-    </section>
-
-    <!-- save container-->
-    <section class="sv-box h">
-      <input class="user-ini" type="text">
     </section>
 
   </main>
