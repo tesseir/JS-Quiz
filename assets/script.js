@@ -1,7 +1,7 @@
 // * lb = leaderboard 
 // * qn = question
 // * ans = answer
-// * sv = save
+// * vlb = view leaderboard
 // * cnt = container
 
 // ! f = flex (for css)  
@@ -11,33 +11,7 @@
 // ? r = restart (for js) 
 // ? ini = initials (for js) 
 
-// elements
-const lbEl = document.querySelector(".lb-box")
-const statsEl = document.querySelector(".stats-box")
-const qnEl = document.querySelector(".qn-box")
-const ansEl = document.querySelector(".ans-box")
-const svEl = document.querySelector(".sv-box")
-const btnEl = document.querySelector(".btn-box")
-
-const scoreEl = document.querySelector("#score");
-const timerEl = document.querySelector("#timer");
-const playBtn = document.querySelector("#p-btn");
-const saveBtn = document.querySelector("#sv-btn");
-const restartBtn = document.querySelector("#r-btn");
-
-//randomizer
-const randomizer = (range) => {
-  return range[Math.floor(Math.random() * range.length)];
-};
-
-//variables
-
-let score = 0;
-let timeLeft = 120;
-let currentQn;
-let shuffled_qnPool, currentQn_index = 0;
-
-// question pool
+//question pool
 let qnPool = [
   {
     qn: 'A is correct',
@@ -78,87 +52,223 @@ let qnPool = [
       { text: 'D', correct: true },
     ]
   },
-];
+]
+
+// elements
+const lbEl = document.querySelector(".lb-box")
+const statsEl = document.querySelector(".stats-box")
+const qnEl = document.querySelector(".qn-box")
+const ansEl = document.querySelector(".ans-box")
+const useriniEl = document.querySelector(".user-ini")
+const btnEl = document.querySelector(".btn-box")
+
+const scoreEl = document.querySelector("#score")
+const timerEl = document.querySelector("#timer")
+const playBtn = document.querySelector("#p-btn")
+const vlbBtn = document.querySelector("#vlb-btn")
+const restartBtn = document.querySelector("#r-btn")
+
+//variables
+let timer 
+
+let score = 0 
+
+let timeLeft = 120
+
+let currentQn = {}
+let availableQn = []
+let qnIndex = 0
+
+const MAXQN = 4
+
+//storage area
+const most_recent_score = localStorage.getItem ( 'mostRecentScore' );
+const lbscores = JSON.parse ( localStorage.getItem ( "highScores" ))||[];
+
+lbEl.innerHTML = lbscores.map ( userData => {
+  return `<li class="high-score f-column">
+  ${userData.name} - ${userData.score}</li>`;} ).join ( "" );
+
+//quiz area
 
 //play button listener
 playBtn.addEventListener('click', startQuiz)
+vlbBtn.addEventListener('click', ui_leaderboard)
 
-//shuffles question pool and does the math for how many questions are left.
+//makes it so questions never repeat
+function shuffle(array) {
+  let currentIndex = array.length,  randomIndex;
+
+  // While there remain elements to shuffle.
+  while (currentIndex != 0) {
+
+    // Pick a remaining element.
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+
+  return array;
+}
+
+//its the start and houses the shuffler
 function startQuiz() {
-  
+
   console.log("start")
-  shuffled_qnPool = []
-  for (let i = 0; i < qnPool.length; i++) {
-    shuffled_qnPool.push(randomizer(qnPool))
-  }
-  userInterface_1();
-  shuffled_qnPool = [...new Set(shuffled_qnPool)];
-  loadQn();
-  timerStart();
-}
 
+  questionCounter = 0
+  score = 0
+  availableQn = shuffle([...qnPool])
+
+  ui_startquiz()
+  timerStart()
+  loadQn()
+
+}
+//shuffles question pool and does the math for how many questions are left.
 function loadQn() {
-  if (currentQn_index < shuffled_qnPool.length) {
-    console.log(shuffled_qnPool[currentQn_index])
-    console.log("Question Loaded")
-    injectQn(shuffled_qnPool[currentQn_index].qn)
-    injectAns(shuffled_qnPool[currentQn_index].ans)
+
+  if (availableQn.length === 0 || questionCounter > MAXQN -1 || timeLeft < 0) {
+    localStorage.setItem('mostRecentScore', score)
+
+    endquiz()
+
+    clearInterval(timer)
+    ui_endquiz()
   }
-}
 
-function injectQn(text) {
-  qnEl.innerHTML = text
-}
+  const qnIndex = Math.floor(Math.random() * availableQn.length)
+  currentQn = availableQn[qnIndex]
 
-function injectAns(answers) {
-  ansEl.innerHTML = answers.map(
-    a => `<button onclick="onbuttonclick(${a.correct})">${a.text} </button>`).join('')
-  debugger
+  injectQn()
+  injectAns()
 }
+// injects question
+function injectQn() {
 
-window.onbuttonclick = (e) => {
-  console.log(e)
-  if (e === true && (currentQn_index < shuffled_qnPool.length - 1)) {
+  console.log("question injected")
+  qnEl.innerHTML = currentQn.qn
+
+}
+//injects answers and creates buttons
+const injectAns = () => {
+
+  console.log("answers injected")
+  ansEl.innerHTML = currentQn.ans.map(
+    answer => `<button class="btn" onclick="onbuttonclick(${answer.correct})">${answer.text} </button>`).join('')
+}
+//does the correct or not statement and the coresponding values
+function onbuttonclick(iscorrect) {
+
+  console.log("test")
+  if (iscorrect) {
     score++
-    scoreEl.innerHTML = score
-  } if (currentQn_index < shuffled_qnPool.length) {
-    currentQn_index++
-    loadQn()
-  } else {
-    alert("You finished the quiz")
-    userInterface_2()
-    clearInterval (timer);
+    scoreEl.textContent = score + "/4"
   }
+
+  if (!iscorrect) {
+    timeLeft = timeLeft - 10
+    timerEl.textContent = timeLeft + " secs"
+    if (timeLeft <= 0) {
+      clearInterval(timer)
+      ui_endquiz()
+    }
+  }
+  questionCounter++
+  loadQn()
 }
+
+
+function endquiz () {
+
+  localStorage.setItem('mostRecentScore', score)
+
+  clearInterval(timer)
+  saveScore()
+  ui_endquiz()
+  ui_leaderboard()
+
+}
+
+function saveScore () {
+  let username = prompt ( "Your score = " + score + "\nEnter name and click OK to save score" );
+  const userData = {name: username,score: score};
+  lbscores.push ( userData );
+  localStorage.setItem ( 'highScores', JSON.stringify ( lbscores ) );
+}
+
+window.onbuttonclick = onbuttonclick;
 
 //timer area
-function timerStart () {
-  timerEl = setInterval ( () => {
-    timeLeft = timeLeft - 1;
-    timerEl.innerText = timeLeft;
-    
-    if ( ( timeLeft <= -1 ) ) 
-      {clearInterval ( timeleft );
-        quizOver ();
-      }}, 1000 );}
+function timerStart() {
+
+  timer = setInterval(function () {
+    timeLeft--
+    timerEl.textContent = timeLeft + " secs"
+
+    if (timeLeft <= 0) {
+      clearInterval(timer)
+      ui_endquiz()
+    }
+
+  }, 1000)
+}
 
 
 //ui area
-function userInterface_1() {
-  svEl.classList.add('h')
-  statsEl.classList.remove('h');
-  qnEl.classList.remove('h');
-  ansEl.classList.remove('h');
-  playBtn.classList.add('h');
-  lbEl.classList.add('h')
+function ui_startquiz() {
+
+  qnEl.classList.remove('h')
+  ansEl.classList.remove('h')
+  statsEl.classList.remove('h')
+
+  // buttons
+
+  playBtn.classList.add('h')
+
 }
 
-function userInterface_2() {
-  qnEl.classList.add('h');
-  ansEl.classList.add('h');
-  lbEl.classList.remove('h')
-  svEl.classList.remove('h')
-  saveBtn.classList.remove('h')
+function ui_endquiz() {
+
+  qnEl.classList.add('h')
+  ansEl.classList.add('h')
+
+  // buttons
+
+  vlbBtn.classList.remove('h')
   restartBtn.classList.remove('h')
-  // timerEl.classList.add('h')
+
 }
+
+function ui_leaderboard() {
+
+  lbEl.classList.remove('h')
+
+  statsEl.classList.add('h')
+  qnEl.classList.add('h')
+  ansEl.classList.add('h')
+
+  // buttons
+
+  playBtn.classList.add('h')
+  vlbBtn.classList.add('h')
+  // restartBtn.classList.add('h')
+
+}
+
+// function ui_restart() {
+
+//   lbEl.classList.add('h')
+
+//   qnEl.classList.remove('h')
+//   ansEl.classList.remove('h')
+
+//   // buttons
+
+//   playBtn.classList.remove('h')
+
+// }
+
