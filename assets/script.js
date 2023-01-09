@@ -181,7 +181,7 @@ function onbuttonclick(iscorrect) {
   loadQn()
 }
 
-
+// saves recent score and changes ui
 function endquiz () {
 
   localStorage.setItem('mostRecentScore', score)
@@ -193,13 +193,15 @@ function endquiz () {
 
 }
 
+//prompts user to save initials and combines score with their initials. pushes data to leaderboard.
 function saveScore () {
-  let username = prompt ( "Your score = " + score + "\nEnter name and click OK to save score" );
+  let username = prompt ( "Your score = " + score + "\nEnter initials and click OK to save score" );
   const userData = {name: username,score: score};
   lbscores.push ( userData );
   localStorage.setItem ( 'highScores', JSON.stringify ( lbscores ) );
 }
 
+//allows the generated buttons in the generate answer buttons to have functionality
 window.onbuttonclick = onbuttonclick;
 
 //timer area
