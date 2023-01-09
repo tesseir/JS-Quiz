@@ -11,33 +11,7 @@
 // ? r = restart (for js) 
 // ? ini = initials (for js) 
 
-// elements
-const lbEl = document.querySelector(".lb-box")
-const statsEl = document.querySelector(".stats-box")
-const qnEl = document.querySelector(".qn-box")
-const ansEl = document.querySelector(".ans-box")
-const svEl = document.querySelector(".sv-box")
-const btnEl = document.querySelector(".btn-box")
-
-const scoreEl = document.querySelector("#score");
-const timerEl = document.querySelector("#timer");
-const playBtn = document.querySelector("#p-btn");
-const saveBtn = document.querySelector("#sv-btn");
-const restartBtn = document.querySelector("#r-btn");
-
-//randomizer
-const randomizer = (range) => {
-  return range[Math.floor(Math.random() * range.length)];
-};
-
-//variables
-
-let score = 0;
-let timeLeft = 120;
-let currentQn;
-let shuffled_qnPool, currentQn_index = 0;
-
-// question pool
+//question pool
 let qnPool = [
   {
     qn: 'A is correct',
@@ -78,87 +52,151 @@ let qnPool = [
       { text: 'D', correct: true },
     ]
   },
-];
+]
+
+// elements
+const lbEl = document.querySelector(".lb-box")
+const statsEl = document.querySelector(".stats-box")
+const qnEl = document.querySelector(".qn-box")
+const ansEl = document.querySelector(".ans-box")
+const svEl = document.querySelector(".sv-box")
+const btnEl = document.querySelector(".btn-box")
+
+const scoreEl = document.querySelector("#score")
+const timerEl = document.querySelector("#timer")
+const playBtn = document.querySelector("#p-btn")
+const saveBtn = document.querySelector("#sv-btn")
+const restartBtn = document.querySelector("#r-btn")
+
+//variables
+
+
+let score = 0
+
+let timeLeft = 120
+
+let currentQn = {}
+let availableQn = []
+let qnIndex = 0
+
+const MAXQN = 4
+
+//quiz area
 
 //play button listener
 playBtn.addEventListener('click', startQuiz)
 
+
 //shuffles question pool and does the math for how many questions are left.
-function startQuiz() {
-  
+ function startQuiz() {
+
   console.log("start")
-  shuffled_qnPool = []
-  for (let i = 0; i < qnPool.length; i++) {
-    shuffled_qnPool.push(randomizer(qnPool))
+
+  questionCounter = 0
+  score = 0
+  availableQn = [...qnPool]
+
+  ui_startquiz()
+  timerStart()
+  loadqn()
+  
+}
+
+function loadqn() {
+
+  if(availableQn.length === 0 || questionCounter > MAXQN || timer === 0){
+    localStorage.setItem('mostRecentScore', score)
   }
-  userInterface_1();
-  shuffled_qnPool = [...new Set(shuffled_qnPool)];
-  loadQn();
-  timerStart();
+
+  const qnIndex = Math.floor(Math.random() * availableQn.length)
+  currentQn = availableQn[qnIndex]
+
+  injectQn()
+  injectAns()
 }
 
-function loadQn() {
-  if (currentQn_index < shuffled_qnPool.length) {
-    console.log(shuffled_qnPool[currentQn_index])
-    console.log("Question Loaded")
-    injectQn(shuffled_qnPool[currentQn_index].qn)
-    injectAns(shuffled_qnPool[currentQn_index].ans)
-  }
+function injectQn() {
+
+  console.log("question injected")
+  qnEl.innerHTML = currentQn.qn
+
 }
 
-function injectQn(text) {
-  qnEl.innerHTML = text
-}
+const injectAns = () => {
 
-function injectAns(answers) {
-  ansEl.innerHTML = answers.map(
+  console.log("answers injected")
+  ansEl.innerHTML = currentQn.ans.map(
     a => `<button onclick="onbuttonclick(${a.correct})">${a.text} </button>`).join('')
-  debugger
-}
 
-window.onbuttonclick = (e) => {
-  console.log(e)
-  if (e === true && (currentQn_index < shuffled_qnPool.length - 1)) {
-    score++
-    scoreEl.innerHTML = score
-  } if (currentQn_index < shuffled_qnPool.length) {
-    currentQn_index++
-    loadQn()
-  } else {
-    alert("You finished the quiz")
-    userInterface_2()
-    clearInterval (timer);
-  }
 }
 
 //timer area
-function timerStart () {
-  timerEl = setInterval ( () => {
-    timeLeft = timeLeft - 1;
-    timerEl.innerText = timeLeft;
-    
-    if ( ( timeLeft <= -1 ) ) 
-      {clearInterval ( timeleft );
-        quizOver ();
-      }}, 1000 );}
+function timerStart() {
+
+  var timer = setInterval(function() {
+    timeLeft--
+    timerEl.textContent = timeLeft + " secs"
+
+    if(timeLeft === 0) {
+      clearInterval(timer)
+      ui_endquiz()
+    }
+
+  }, 1000)
+}  
 
 
 //ui area
-function userInterface_1() {
-  svEl.classList.add('h')
-  statsEl.classList.remove('h');
-  qnEl.classList.remove('h');
-  ansEl.classList.remove('h');
-  playBtn.classList.add('h');
-  lbEl.classList.add('h')
+function ui_startquiz() {
+  
+  qnEl.classList.remove('h')
+  ansEl.classList.remove('h')
+  statsEl.classList.remove('h')
+
+  // buttons
+
+  playBtn.classList.add('h')
+
 }
 
-function userInterface_2() {
-  qnEl.classList.add('h');
-  ansEl.classList.add('h');
-  lbEl.classList.remove('h')
-  svEl.classList.remove('h')
+function ui_endquiz() {
+
+  qnEl.classList.add('h')
+  ansEl.classList.add('h')
+
+  // buttons
+
   saveBtn.classList.remove('h')
   restartBtn.classList.remove('h')
-  // timerEl.classList.add('h')
+
 }
+
+function ui_leaderboard() {
+  
+  lbEl.classList.remove('h')
+
+  statsEl.classList.add('h')
+  qnEl.classList.add('h')
+  ansEl.classList.add('h')
+
+  // buttons
+
+  playBtn.classList.add('h')
+  saveBtn.classList.add('h')
+  restartBtn.classList.add('h')
+
+}
+
+function ui_restart() {
+
+  lbEl.classList.add('h')
+  
+  qnEl.classList.remove('h')
+  ansEl.classList.remove('h')
+
+  // buttons
+
+  playBtn.classList.remove('h')
+
+}
+
